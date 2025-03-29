@@ -44,21 +44,65 @@ void testing_abstraction() {
 
 class MyBox {
 public:
-  MyBox(int value) {
-    x = new int;
-    *x = value;
-  }
-  ~MyBox() { delete x; }
+  MyBox() { val = nullptr; }
 
-  int getValue() { return *x; }
+  // Constructor
+  MyBox(int value) {
+    val = new int;
+    *val = value;
+  }
+
+  // Destructor
+  ~MyBox() { delete val; }
+
+  // Copy constructor
+  MyBox(const MyBox &box) {
+    val = new int;
+    *val = *box.val;
+  }
+  // Copy assignment
+  MyBox &operator=(const MyBox &box) {
+    if (val != nullptr) {
+      delete val;
+    }
+
+    val = new int;
+    *val = *box.val;
+
+    return *this;
+  }
+
+  // Move constructor
+  MyBox(MyBox &&box) {
+    val = box.val;
+    box.val = nullptr;
+  }
+  // Move assignment
+  MyBox &operator=(MyBox &&box) {
+    val = box.val;
+    box.val = nullptr;
+
+    return *this;
+  }
+
+  int getValue() { return *val; }
 
 private:
-  int *x;
+  int *val;
+};
+
+class User {
+public:
+  MyBox age;
+  User(MyBox &&a) : age(std::move(a)) {};
 };
 
 void testing_destructors() {
   auto v = MyBox(30);
   std::cout << v.getValue() << "\n";
+
+  User user1 = User(std::move(v));
+  std::cout << user1.age.getValue() << "\n";
 }
 
 int main() {
