@@ -44,6 +44,7 @@ void testing_abstraction() {
 
 class MyBox {
 public:
+  // Default Constructor
   MyBox() { val = nullptr; }
 
   // Constructor
