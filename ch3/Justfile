@@ -1,0 +1,3 @@
+run:
+  @g++ -c main.cpp User.cpp
+  @g++ -o a.out main.o User.o && ./a.out
