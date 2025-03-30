@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 
 class Pair {
@@ -77,10 +78,50 @@ int solve_p1(std::ifstream &f) {
   return total;
 }
 
+template <typename T>
+std::unordered_map<T, int> get_count(const std::vector<T> &values) {
+  std::unordered_map<T, int> count;
+  count.reserve(700);
+
+  for (const auto &value : values) {
+    if (count.find(value) == count.end()) {
+      count[value] = 1;
+    } else {
+      count[value] += 1;
+    }
+  }
+
+  return count;
+}
+
+int solve_p2(std::ifstream &f) {
+  PairOfVecs pairs = parse_contents(f);
+
+  auto vec1 = std::move(pairs.vec1);
+  auto vec2 = std::move(pairs.vec2);
+
+  auto count = get_count(vec2);
+
+  int total = 0;
+  for (const auto &value : vec1) {
+    if (count.find(value) != count.end()) {
+      total += value * count[value];
+    }
+  }
+
+  return total;
+}
+
 int main() {
   std::ifstream f;
   f.open("input.txt");
 
   auto result1 = solve_p1(f);
   std::cout << "P1: " << result1 << "\n";
+
+  f.clear();
+  f.seekg(0);
+
+  auto result2 = solve_p2(f);
+  std::cout << "P2: " << result2 << "\n";
 }
