@@ -24,6 +24,7 @@ public:
     val = box.val;
     box.val = nullptr;
   }
+
   Box &operator=(Box &&box) {
     delete val;
 
