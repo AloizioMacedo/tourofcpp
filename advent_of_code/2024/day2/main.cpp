@@ -67,16 +67,59 @@ bool is_safe(const Report &report) {
          is_within_bounds(report);
 }
 
+bool is_safe_relaxed(const Report &report, Report &auxBuf) {
+  for (int i = 0; i < report.size(); i++) {
+    auxBuf.clear();
+
+    for (int j = 0; j < report.size(); j++) {
+      if (j == i) {
+        continue;
+      }
+      auxBuf.push_back(report[j]);
+    }
+
+    if (is_safe(auxBuf)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 int solve_p1(std::ifstream &f) {
   int total = 0;
 
-  Report report_buf;
   std::string line;
   line.reserve(50);
+
+  Report report_buf;
+  report_buf.reserve(20);
 
   while (std::getline(f, line)) {
     parse_report(line, report_buf);
     if (is_safe(report_buf)) {
+      total += 1;
+    }
+  }
+
+  return total;
+}
+
+int solve_p2(std::ifstream &f) {
+  int total = 0;
+
+  std::string line;
+  line.reserve(50);
+
+  Report report_buf;
+  report_buf.reserve(20);
+
+  Report aux_report_buf;
+  aux_report_buf.reserve(19);
+
+  while (std::getline(f, line)) {
+    parse_report(line, report_buf);
+    if (is_safe_relaxed(report_buf, aux_report_buf)) {
       total += 1;
     }
   }
@@ -90,4 +133,10 @@ int main() {
 
   auto report1 = solve_p1(f);
   std::cout << "P1: " << report1 << "\n";
+
+  f.clear();
+  f.seekg(0);
+
+  auto report2 = solve_p2(f);
+  std::cout << "P2: " << report2 << "\n";
 }
