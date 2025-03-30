@@ -7,19 +7,19 @@
 
 using Report = std::vector<int>;
 
-Report parse_report(const std::string_view &line) {
+void parse_report(const std::string_view &line, Report &report_buf) {
   int a = 0;
   int b = 0;
 
-  Report values;
-  values.reserve(20);
+  report_buf.clear();
+  report_buf.reserve(20);
   while ((b = line.find(" ", a)) != std::string_view::npos) {
     auto n_str = line.substr(a, b);
 
     int n = 0;
     std::from_chars(n_str.begin(), n_str.end(), n);
 
-    values.push_back(n);
+    report_buf.push_back(n);
     a = b + 1;
   }
 
@@ -28,21 +28,7 @@ Report parse_report(const std::string_view &line) {
   int n = 0;
   std::from_chars(n_str.begin(), n_str.end(), n);
 
-  values.push_back(n);
-
-  return values;
-}
-
-std::vector<Report> parse_file(std::ifstream &f) {
-  std::string line;
-
-  std::vector<Report> reports;
-  while (std::getline(f, line)) {
-    Report report = parse_report(line);
-    reports.push_back(std::move(report));
-  }
-
-  return reports;
+  report_buf.push_back(n);
 }
 
 bool is_ascending(const Report &report) {
@@ -82,10 +68,15 @@ bool is_safe(const Report &report) {
 }
 
 int solve_p1(std::ifstream &f) {
-  auto reports = parse_file(f);
   int total = 0;
-  for (const auto &report : reports) {
-    if (is_safe(report)) {
+
+  Report report_buf;
+  std::string line;
+  line.reserve(50);
+
+  while (std::getline(f, line)) {
+    parse_report(line, report_buf);
+    if (is_safe(report_buf)) {
       total += 1;
     }
   }
