@@ -62,8 +62,8 @@ PairOfVecs parse_contents(std::ifstream &f) {
 
 int solve_p1(std::ifstream &f) {
   PairOfVecs pairs = parse_contents(f);
-  auto vec1 = std::move(pairs.vec1);
-  auto vec2 = std::move(pairs.vec2);
+  auto &vec1 = pairs.vec1;
+  auto &vec2 = pairs.vec2;
 
   std::sort(vec1.begin(), vec1.end());
   std::sort(vec2.begin(), vec2.end());
@@ -97,8 +97,8 @@ std::unordered_map<T, int> get_count(const std::vector<T> &values) {
 int solve_p2(std::ifstream &f) {
   PairOfVecs pairs = parse_contents(f);
 
-  auto vec1 = std::move(pairs.vec1);
-  auto vec2 = std::move(pairs.vec2);
+  auto &vec1 = pairs.vec1;
+  auto &vec2 = pairs.vec2;
 
   auto count = get_count(vec2);
 
